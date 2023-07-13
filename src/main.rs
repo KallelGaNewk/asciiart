@@ -4,26 +4,19 @@ use std::io::{BufReader, Read};
 use std::path::Path;
 
 fn main() {
-    // Carrega a imagem
     let image_path = Path::new("image.png");
-    let image_file = File::open(image_path).expect("Falha ao abrir o arquivo de imagem");
+    let image_file = File::open(image_path).expect("Failed to open image file");
     let mut buf_reader = BufReader::new(image_file);
     let mut image_data = Vec::new();
     buf_reader
         .read_to_end(&mut image_data)
-        .expect("Falha ao ler a imagem");
+        .expect("Failed to read image");
 
-    // Decodifica a imagem
-    let image = load_from_memory(&image_data).expect("Falha ao decodificar a imagem");
-
-    // Exibe as dimensões da imagem
+    let image = load_from_memory(&image_data).expect("Failed to decode image");
     let (width, height) = image.dimensions();
-    println!("Dimensões da imagem: {}x{}", width, height);
+    println!("Image dimensions: {}x{}", width, height);
 
-    // Redimensiona para 64px
     let image = image.resize(64, 64, image::imageops::FilterType::Nearest);
-
-    // Converte a imagem em arte ASCII
     let ascii_art = convert_to_ascii(&image);
     println!("{}", ascii_art);
 }
