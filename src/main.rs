@@ -26,6 +26,13 @@ fn convert_to_ascii(image: &DynamicImage) -> String {
     let mut ascii_art = String::new();
 
     for y in 0..height {
+        // if odd skip row, to keep aspect ratio
+        if y % 2 == 1 {
+            continue;
+        }
+
+        // println!("Processing row {}", y);
+
         for x in 0..width {
             let pixel = image.get_pixel(x, y);
             let luminance = (0.2126 * pixel[0] as f32
