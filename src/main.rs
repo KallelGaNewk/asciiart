@@ -38,7 +38,7 @@ fn main() {
 
 fn convert_to_ascii(image: &DynamicImage) -> String {
     let (width, height) = image.dimensions();
-    let mut ascii_art = String::new(); // ""
+    let mut ascii_art = String::new();
 
     for y in 0..height {
         // if odd skip row, to keep aspect ratio
@@ -50,35 +50,34 @@ fn convert_to_ascii(image: &DynamicImage) -> String {
 
         for x in 0..width {
             let pixel = image.get_pixel(x, y);
-            let luminance = (
-                  0.2126 * pixel[0] as f32
-                + 0.7152 * pixel[1] as f32
-                + 0.0722 * pixel[2] as f32
-            ) as u8;
-            let ascii_char = if pixel[3] == 0 {
-                ' '
-            } else {
-                match luminance { // 0 - 256
-                    0..=15 => ' ',
-                    16..=31 => '.',
-                    32..=47 => ':',
-                    48..=63 => '-',
-                    64..=79 => '=',
-                    80..=95 => '+',
-                    96..=111 => '*',
-                    112..=127 => '#',
-                    128..=143 => '%',
-                    144..=159 => '@',
-                    160..=175 => 'a',
-                    176..=191 => 'o',
-                    192..=207 => 'e',
-                    208..=223 => 'h',
-                    224..=239 => 'u',
-                    _ => '$',
-                }
+
+            // https://www.itu.int/dms_pubrec/itu-r/rec/bt/R-REC-BT.601-7-201103-I!!PDF-E.pdf
+            let luminance =
+                (0.299 * pixel[0] as f32 + 0.587 * pixel[1] as f32 + 0.114 * pixel[2] as f32) as u8;
+
+            let ascii_char = match luminance {
+                // 0 - 256
+                0..=15 => ' ',
+                16..=31 => '.',
+                32..=47 => ':',
+                48..=63 => '-',
+                64..=79 => '=',
+                80..=95 => '+',
+                96..=111 => '*',
+                112..=127 => '#',
+                128..=143 => '%',
+                144..=159 => '@',
+                160..=175 => 'a',
+                176..=191 => 'o',
+                192..=207 => 'e',
+                208..=223 => 'h',
+                224..=239 => 'u',
+                _ => '$',
             };
+
             ascii_art.push(ascii_char);
         }
+
         ascii_art.push('\n');
     }
 
